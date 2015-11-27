@@ -1,0 +1,120 @@
+#!/bin/bash
+#-------------------------------------------------------------
+#       Script de Backup - Recovery Manager
+#
+#       Autor: Bernardo S E Vale
+#       Data:   12/04/2014
+#       email: bernardo.vale@lb2.com.br
+#       LB2 Consultoria - Leading Business to the Next Level!
+#-------------------------------------------------------------
+
+#-------------------------------------------------------------
+help(){
+USAGE="Usage: `basename $0` [-hv] [-o arg] args"
+
+        echo "########################################################"
+        echo "Script de Backup - Recovery Manager"
+        echo "Modo de backup - WHOLE BACKUP = -W"
+        echo "Modo de backup - ARCHIVES BACKUP = -A"
+        echo "Parametros Obrigatorios:"
+        echo "-s SID do banco de backup"
+        echo "Parametros opcionais:"
+        echo "-l /dir/to/log"
+        echo "-F 5 - Filesperset 5"
+        echo "./rman.sh -W -s orcl -l /u01/app/oracle/backup/log -F 5"
+        echo "./rman.sh -A -s orcl -l /u01/app/oracle/backup/log"
+        echo "########################################################"
+}
+#-------------------------------------------------------------
+#               Configuração de Variáveis
+
+parse_arguments(){
+export DATA=`date +%Y%m%d`
+export DATAHORA=`date +%Y%m%d%H`
+export RMAN_LOG=$LOG_DIR/rman_$DATA.log
+export SCRIPT_LOG=$LOG_DIR/backup_rman_$DATA.log
+. <%= @user_base_dir %>/oracle/<%= @bash_file %>
+}
+#-------------------------------------------------------------
+
+#-------------------------------------------------------------
+#               Metodo de adição de mensagem de Log
+
+add_log(){
+echo "==> $1" >> $SCRIPT_LOG 2>&1
+date >> $SCRIPT_LOG 2>&1
+}
+#-------------------------------------------------------------
+
+#-------------------------------------------------------------
+#               Metodo de execução do backup
+#
+#       arg1 = Modo de backup - WHOLE, FULL INCREMENTAL, ARCHIVES
+#       arg2 = Opcional - TUNNING ARGUMENTS
+
+run_backup(){
+add_log "Executando Backup - MODO $1"
+#Adiciona o comando referente ao tipo de backup
+if [ $BACKUP_MODE = "ARCHIVES_BACKUP" ]; then
+        echo "ARCHIVES"
+export SCRIPT_CMD="run {
+sql 'alter system switch logfile';
+$BACKUP_CMD tag 'ARCHIVES_$DATAHORA' $TUNNING_ARGS;
+delete noprompt archivelog like '%' backed up 1 times to device type disk;
+}"
+
+else
+export SCRIPT_CMD="
+run {
+crosscheck backupset;
+delete noprompt obsolete;
+sql 'alter system checkpoint';
+sql 'alter system switch logfile';
+$BACKUP_CMD tag '$1_DIARIO'$TUNNING_ARGS;}"
+
+fi
+echo "Comando: $SCRIPT_CMD" >> $SCRIPT_LOG 2>&1
+$ORACLE_HOME/bin/rman target /  log=$RMAN_LOG <<EOF
+$SCRIPT_CMD
+EOF
+add_log "Termino do Backup - MODO $1"
+}
+#-------------------------------------------------------------
+while getopts ":hvs:Wl:F:A" OPT; do
+    case "$OPT" in
+        F) #FILESPERSET CLAUSE
+                export TUNNING_ARGS=$TUNNING_ARGS" filesperset $OPTARG"
+                ;;
+        l) #Diretorio dos logs
+                export LOG_DIR=$OPTARG
+                ;;
+        A) # Backup dos archives
+                export BACKUP_CMD="backup archivelog all" #Sem delete input
+                export BACKUP_MODE="ARCHIVES_BACKUP"
+                ;;
+        W) #Whole backup
+                export BACKUP_CMD="backup database plus archivelog delete all input"
+                export BACKUP_MODE="WHOLE_DATABASE_BACKUP"
+                ;;
+        s) #Especifique o banco que fara o backup
+                export ORACLE_SID=$OPTARG
+                ;;
+        h)
+            help
+            exit 0
+            ;;
+        v)
+            echo "`basename $0` version 0.1 - LB2 Consultoria S/S"
+            exit 0
+            ;;
+        \?) #Falha nos parametros
+            echo "Verifique os parametros $OPTARG"
+            exit 1
+            ;;
+    esac
+done
+# Configurações de variaveis do backup
+parse_arguments
+add_log "Inicio do Backup Físico com RMAN"
+run_backup $BACKUP_MODE
+add_log "Fim do Backup Fisico."

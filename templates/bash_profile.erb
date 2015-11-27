@@ -1,0 +1,18 @@
+if [ -f /etc/bashrc ]; then
+  . /etc/bashrc
+fi
+# User specific environment and startup programs
+export ORACLE_BASE=<%= @oracle_base %>
+export ORACLE_HOME=<%= @oracle_home %>
+export ORACLE_SID=<%= @oracle_sid %>
+export ORACLE_HOSTNAME=<%= @hostname %>
+export ORACLE_TERM=xterm; export ORACLE_TERM
+export EDITOR=vim; export EDITOR
+export PATH=<%= @oracle_home %>/bin:$PATH:$HOME/bin:/bin:/usr/bin:/usr/sbin:/sbin;
+export LD_LIBRARY_PATH=<%= @oracle_home %>/lib; export LD_LIBRARY_PATH
+export CLASSPATH=<%= @oracle_home %>/jre:<%= @oracle_home %>/jlib:<%= @oracle_home %>/rdbms/jlib;
+export SQLPLUS_HOME=<%= @oracle_home %>
+export ORACLE_TERM=xterm
+export TEMP=/tmp
+export TMPDIR=/tmp
+umask 022

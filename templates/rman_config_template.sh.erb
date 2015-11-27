@@ -1,0 +1,24 @@
+#!/bin/bash
+#-------------------------------------------------------------
+#       Script de Config Backup - Recovery Manager
+#
+#       Autor: Bernardo S E Vale
+#       Data:   21/10/2015
+#       email: bernardo.vale@lb2.com.br
+#       LB2 Consultoria - Leading Business to the Next Level!
+#-------------------------------------------------------------
+. <%= @user_base_dir %>/oracle/<%= @bash_file %>
+export ORACLE_SID=<%= @oracle_sid %>
+SCRIPT_CMD="
+run {
+    CONFIGURE DEVICE TYPE DISK BACKUP TYPE TO COMPRESSED BACKUPSET PARALLELISM 1;
+    CONFIGURE RETENTION POLICY TO RECOVERY WINDOW OF <%= @rman_retention %> DAYS;
+    CONFIGURE CHANNEL DEVICE TYPE DISK FORMAT '<%= @backup_dir %>/rman/rman_%d_%U.bkp';
+    CONFIGURE CONTROLFILE AUTOBACKUP ON;
+    CONFIGURE CONTROLFILE AUTOBACKUP FORMAT FOR DEVICE TYPE DISK TO 'control_%d_%F_%n';
+    CONFIGURE BACKUP OPTIMIZATION ON;
+}"
+$ORACLE_HOME/bin/rman target / <<EOF
+$SCRIPT_CMD
+EOF
+exit

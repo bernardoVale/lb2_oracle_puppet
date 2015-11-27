@@ -1,0 +1,71 @@
+#!/bin/bash
+#----------------------------------------------------------
+# Seta as variaveis de ambiente
+#----------------------------------------------------------
+. <%= @user_base_dir %>/oracle/<%= @bash_file %>
+
+export DATA=`date +%Y%m%d`
+export DATAHORA=`date +%Y%m%d%H%M%S`
+
+export SENHA=<%= @datapump_password %>
+export DIR_SCRIPTS=<%= @backup_dir %>/scripts
+export DIR_LOG=<%= @backup_dir %>/log
+export DIR_LOG_BKP=${DIR_LOG}/datapump_`date +%Y%m%d`.log
+export DIR_DP=<%= @backup_dir %>/datapump
+
+#---------------------------------------------------------
+# Inicio do Backup Logico com DATAPUMP
+#---------------------------------------------------------
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Inicio do Backup Logico com DATAPUMP' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
+
+
+#---------------------------------------------------------
+# Apaga Backups Mais Antigos que <%= @datapump_retention %> Dias
+#---------------------------------------------------------
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Inicio da Exclusao dos Backups Antigos' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
+
+rm $DIR_DP/*.dmp
+find $DIR_DP -name \*.tgz -mtime +<%= @datapump_retention %> -exec \rm {} \; >> $DIR_LOG_BKP 2>&1
+find $DIR_DP -name \*.log -mtime +<%= @datapump_retention %> -exec \rm {} \; >> $DIR_LOG_BKP 2>&1
+find $DIR_LOG -name \*.log -mtime +<%= @datapump_retention %> -exec \rm {} \; >> $DIR_LOG_BKP 2>&1
+
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Fim da Exclusao dos Backups Antigos' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
+
+#---------------------------------------------------------
+# Executa Backup Logico
+#---------------------------------------------------------
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Inicio da Exportacao dos Dados' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
+
+$ORACLE_HOME/bin/expdp system/$SENHA directory=<%= @datapump_directory %> dumpfile=dpfull_$DATA.dmp full=y consistent=y logfile=export_$DATA.log
+
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Fim da Exportacao dos Dados' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
+
+#---------------------------------------------------------
+# Compacta Backup Logico
+#---------------------------------------------------------
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Inicio da Compactacao do Backup Logico' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
+
+tar -zcvf $DIR_DP/dpfull_"$DATA".tgz $DIR_DP/*$DATA*.dmp >> $DIR_LOG_BKP 2>&1
+
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Fim da Compactacao do Backup Logico' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
+
+#---------------------------------------------------------
+# Fim do DataPump
+#---------------------------------------------------------
+echo >> $DIR_LOG_BKP 2>&1
+echo '==> Fim do DataPump' >> $DIR_LOG_BKP 2>&1
+date >> $DIR_LOG_BKP 2>&1
