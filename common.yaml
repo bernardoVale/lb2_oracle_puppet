@@ -36,3 +36,10 @@ lb2_ora_totvs::backup::rman_retention: '1' # default value
 lb2_ora_totvs::backup::datapump_retention: '2' # default value
 lb2_ora_totvs::backup::datapump_directory: 'DATAPUMP' # default value
 lb2_ora_totvs::backup::backup_dir: '/u01/app/oracle/backup' # default value
+# Cron minute:hour for backups first it's hour then minutes
+lb2_ora_totvs::backup::rman_cron: # default value
+- '00'
+- '30'
+lb2_ora_totvs::backup::datapump_cron: #default value
+- '03'
+- '00'
