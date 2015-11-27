@@ -1,0 +1,38 @@
+---
+#LB2 ORA TOTVS LIST OF PARAMS
+#Params class
+lb2_ora_totvs::params::version: '11.2' #default value
+lb2_ora_totvs::params::ship_software: true #default value
+lb2_ora_totvs::params::action: 'create' #default value
+lb2_ora_totvs::params::oracle_sid: 'totvs' #default value
+lb2_ora_totvs::params::db_port: '1521' #default value
+lb2_ora_totvs::params::sys_password: 'oracle' #default value
+lb2_ora_totvs::params::system_password: 'oracle' #default value
+lb2_ora_totvs::params::character_set: 'WE8MSWIN1252' #default value
+lb2_ora_totvs::params::nationalcharacter_set: 'AL16UTF16' #default value
+lb2_ora_totvs::params::user_base_dir: '/home' #default value
+lb2_ora_totvs::params::listener_port: '1521' #default value
+lb2_ora_totvs::params::installation_title: 'totvsDb_Create' #default value
+
+#Only use those params if ship_software = false
+# If ship_software = true the file name will be provided
+# automatically.
+#lb2_ora_totvs::params::ora_binary_folder: '/vagrant' 
+#lb2_ora_totvs::params::ora_binary_files: 'oracle'
+
+#Provide this if you want a different file for Oracle Variables
+# Redhat will get automatically .bash_profile and SLES .profile
+#lb2_ora_totvs::params::bash_file: '.bash_profile' #default value
+
+#Kernel Specific params
+lb2_ora_totvs::kernel::shm_size: '4000m' #default value
+#Init Specific params
+lb2_ora_totvs::bash_template: 'bash_profile.erb' #default value
+lb2_ora_totvs::database_version: 'SEONE' #default value [SEONE,SE,EE]
+lb2_ora_totvs::listener_name: 'listener' #default value
+#Database Specific params
+#Backup specific params
+lb2_ora_totvs::backup::rman_retention: '1' # default value
+lb2_ora_totvs::backup::datapump_retention: '2' # default value
+lb2_ora_totvs::backup::datapump_directory: 'DATAPUMP' # default value
+lb2_ora_totvs::backup::backup_dir: '/u01/app/oracle/backup' # default value

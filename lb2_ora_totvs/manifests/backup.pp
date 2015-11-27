@@ -3,11 +3,13 @@ class lb2_ora_totvs::backup (
   $bash_file = $lb2_ora_totvs::params::bash_file,
   $user_base_dir = $lb2_ora_totvs::params::user_base_dir,
   $oracle_sid = $lb2_ora_totvs::params::oracle_sid,
+  $installation_title = $lb2_ora_totvs::params::installation_title,
   $rman_retention = '1',
   $datapump_retention = '2',
   $datapump_directory = 'DATAPUMP',
   $backup_dir = '/u01/app/oracle/backup',
-  $installation_title = $lb2_ora_totvs::params::installation_title,
+  $datapump_cron = ['03', '00'],
+  $rman_cron = ['00', '30']
 )
 {
   #Diretorio do datapump
@@ -16,13 +18,6 @@ class lb2_ora_totvs::backup (
     password => $datapump_password,
     unless => "select * from dual where 0 = (select decode(directory_name,'${datapump_directory}',0,null) from dba_directories where directory_name='${datapump_directory}')"
   }
-  # Evitar password expire
-  ora_exec {"alter profile default limit password_life_time unlimited@${oracle_sid}":
-     username => 'system',
-     password => $datapump_password,
-     unless => "select * from dual
-     where 0 = (select decode('UNLIMITED',limit,0,null) from dba_profiles where resource_name = 'PASSWORD_LIFE_TIME' and profile='DEFAULT')"
-   }
   #Criando a estrutura da pasta de backup
   file { [ "$backup_dir/", "$backup_dir/datapump",
            "$backup_dir/rman", "$backup_dir/log", "$backup_dir/scripts" ]:
@@ -75,8 +70,8 @@ class lb2_ora_totvs::backup (
   } 
   cron::job{
     'datapump':
-      minute      => '02',
-      hour        => '11',
+      minute      => $datapump_cron[1],
+      hour        => $datapump_cron[0],
       date        => '*',
       month       => '*',
       weekday     => '*',
@@ -85,8 +80,8 @@ class lb2_ora_totvs::backup (
   }
   cron::job{
     'rman':
-      minute      => '10',
-      hour        => '11',
+      minute      => $rman_cron[1],
+      hour        => $rman_cron[0],
       date        => '*',
       month       => '*',
       weekday     => '*',
