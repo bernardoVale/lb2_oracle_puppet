@@ -8,7 +8,6 @@ class lb2_ora_totvs::params (
    $system_password = 'oracle',
    $character_set = 'WE8MSWIN1252',
    $nationalcharacter_set = 'AL16UTF16',
-   $bash_file = '.bash_profile',
    $user_base_dir = '/home',
    $installation_title = 'totvsDb_Create',
    $listener_port = '1521',

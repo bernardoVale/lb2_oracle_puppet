@@ -1,5 +1,5 @@
 class lb2_ora_totvs::kernel (
-  $install_list = lb2_ora_totvs::params::install_list,
+  $install_list = $lb2_ora_totvs::params::install_list,
   $shm_size = '4000m'
 )
 {
