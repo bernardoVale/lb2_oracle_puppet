@@ -68,24 +68,20 @@ class lb2_ora_totvs::backup (
       group => 'oinstall',
       refreshonly => true,
   } 
-  cron::job{
-    'datapump':
-      minute      => $datapump_cron[1],
-      hour        => $datapump_cron[0],
-      date        => '*',
-      month       => '*',
-      weekday     => '*',
-      user        => 'oracle',
-      command     => "${backup_dir}/scripts/datapump.sh",
+  cron { 'datapump':
+    ensure  => 'present',
+    command => '${backup_dir}/scripts/datapump.sh',
+    hour    => $datapump_cron[0],
+    minute  => $datapump_cron[1],
+    target  => 'oracle',
+    user    => 'oracle',
   }
-  cron::job{
-    'rman':
-      minute      => $rman_cron[1],
-      hour        => $rman_cron[0],
-      date        => '*',
-      month       => '*',
-      weekday     => '*',
-      user        => 'oracle',
-      command     => "${backup_dir}/scripts/rman.sh -W -s ${oracle_sid} -p ${backup_dir}/log -F 5",
+  cron { 'rman':
+    ensure  => 'present',
+    command => '${backup_dir}/scripts/rman.sh -W -s ${oracle_sid} -p ${backup_dir}/log -F 5',
+    hour    => $datapump_cron[0],
+    minute  => $datapump_cron[1],
+    target  => 'oracle',
+    user    => 'oracle',
   }
 }
