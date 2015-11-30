@@ -7,9 +7,9 @@ class lb2_ora_totvs::viasoft(
 	$dumpfile = 'viasoft.dmp',
 ){
 	file { $dumpfile:
-		path => "$backup_dir/datapump",
+		path => "${backup_dir}/datapump/${dumpfile}",
 		ensure => file,
-		source => "file:///vagrant/oracle//$dumpfile",
+		source => "file:///vagrant/oracle//${dumpfile}",
 	}
 	exec { 'impdp_viasoft':
 		command      => "${oracle_home}/bin/impdp system/${system_password}@${oracle_sid} directory=${datapump_directory} dumpfile=${dumpfile} logfile=import_viasoft_base.log schemas=VIASOFTLOGISTICA,VIASOFTGP,VIASOFTMCP,VIASOFTFIN,VIASOFTRH,VIASOFTMERC,VIASOFT,VIASOFTBASE,VIASOFTCP,VIASOFTSYS,VIASOFTFISCAL,VIASOFTCTB",
@@ -17,6 +17,9 @@ class lb2_ora_totvs::viasoft(
 		creates => "$backup_dir/datapump/import_viasoft_base.log",
 		user => 'oracle',
 		group => 'oinstall',
+		path => '/usr/bin:/usr/sbin:/bin:/usr/local/bin:${oracle_home}/bin',
+		environment => ["ORACLE_HOME=${oracle_home}"],
+		timeout => 0,
 	}
 	# ora_exec {"@${oracle_sid}":
  #     username => 'system',
