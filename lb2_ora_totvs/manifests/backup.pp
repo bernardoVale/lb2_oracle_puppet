@@ -70,7 +70,7 @@ class lb2_ora_totvs::backup (
   } 
   cron { 'datapump':
     ensure  => 'present',
-    command => '${backup_dir}/scripts/datapump.sh',
+    command => "${backup_dir}/scripts/datapump.sh",
     hour    => $datapump_cron[0],
     minute  => $datapump_cron[1],
     target  => 'oracle',
@@ -78,7 +78,7 @@ class lb2_ora_totvs::backup (
   }
   cron { 'rman':
     ensure  => 'present',
-    command => '${backup_dir}/scripts/rman.sh -W -s ${oracle_sid} -p ${backup_dir}/log -F 5',
+    command => "${backup_dir}/scripts/rman.sh -W -s ${oracle_sid} -l ${backup_dir}/log -F 5",
     hour    => $datapump_cron[0],
     minute  => $datapump_cron[1],
     target  => 'oracle',
