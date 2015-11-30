@@ -1,0 +1,5 @@
+---
+#Default installation for Oracle TOTVS on Vagrant
+lb2_ora_totvs::params::ship_software: false
+lb2_ora_totvs::params::ora_binary_folder: '/vagrant' 
+lb2_ora_totvs::params::ora_binary_files: 'oracle'
