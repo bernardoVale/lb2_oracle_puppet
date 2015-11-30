@@ -20,6 +20,7 @@ class lb2_ora_totvs::viasoft(
 		path => '/usr/bin:/usr/sbin:/bin:/usr/local/bin:${oracle_home}/bin',
 		environment => ["ORACLE_HOME=${oracle_home}"],
 		timeout => 0,
+		returns => [0, 5],
 	}
 	# ora_exec {"@${oracle_sid}":
  #     username => 'system',
