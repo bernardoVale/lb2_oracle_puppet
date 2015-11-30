@@ -13,6 +13,8 @@ class lb2_ora_totvs::params (
    $listener_port = '1521',
    $ora_binary_folder = '/u01',
    $ora_binary_files = 'app',
+   $datapump_directory = 'DATAPUMP',
+   $backup_dir = '/u01/app/oracle/datapump',
 ){
   if $osfamily == 'Redhat'{
     $bash_file = '.bash_profile'

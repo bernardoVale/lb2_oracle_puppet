@@ -30,6 +30,7 @@ puppet module install biemond-oradb
 
 # Moving templates
 cp /etc/puppet/modules/lb2_ora_totvs/templates/totvs1* /etc/puppet/modules/oradb/templates/
+cp /etc/puppet/modules/lb2_ora_totvs/templates/viasoft* /etc/puppet/modules/oradb/templates/
 
 #Now just customize inside $HOSTNAME.yaml and apply your code 
 #Applying code

@@ -4,10 +4,10 @@ class lb2_ora_totvs::backup (
   $user_base_dir = $lb2_ora_totvs::params::user_base_dir,
   $oracle_sid = $lb2_ora_totvs::params::oracle_sid,
   $installation_title = $lb2_ora_totvs::params::installation_title,
+  $datapump_directory = $lb2_ora_totvs::params::datapump_directory,
+  $backup_dir = $lb2_ora_totvs::params::backup_dir,
   $rman_retention = '1',
   $datapump_retention = '2',
-  $datapump_directory = 'DATAPUMP',
-  $backup_dir = '/u01/app/oracle/backup',
   $datapump_cron = ['03', '00'],
   $rman_cron = ['00', '30']
 )
