@@ -15,6 +15,8 @@ class lb2_ora_totvs::params (
    $ora_binary_files = 'app',
    $datapump_directory = 'DATAPUMP',
    $backup_dir = '/u01/app/oracle/datapump',
+   $data_file_destination = '/u01/app/oracle/oradata',
+   $recovery_area_destination = '/u01/app/oracle/fast_recovery_area',
 ){
   if $osfamily == 'Redhat'{
     $bash_file = '.bash_profile'

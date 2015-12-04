@@ -1,0 +1,20 @@
+whenever sqlerror exit sql.sqlcode
+connect sys/<%= @sys_password %> as sysdba
+set pagesize 0 emb on newpage none
+set newpage 0
+set space 0
+set linesize 32767
+set echo off
+set feedback off
+set verify off
+set heading off
+set markup html off
+set colsep ','
+grant execute on sys.utl_recomp to VIASOFTLOGISTICA,VIASOFTGP,VIASOFTMCP,VIASOFTFIN,VIASOFTRH,VIASOFTMERC,VIASOFT,VIASOFTBASE,VIASOFTCP,VIASOFTSYS,VIASOFTFISCAL,VIASOFTCTB;
+spool <%= @backup_dir %>/log/viasoft_pos_result.csv
+select * from dual
+where 12 = (
+select count(*) from table_privileges
+ where table_name = 'UTL_RECOMP'
+   and grantee in ('VIASOFTLOGISTICA','VIASOFTGP','VIASOFTMCP','VIASOFTMERC','VIASOFT','VIASOFTBASE','VIASOFTCP','VIASOFTSYS','VIASOFTFISCAL','VIASOFTCTB', 'VIASOFTFIN','VIASOFTRH'));
+spool off;

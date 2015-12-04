@@ -12,6 +12,8 @@ class lb2_ora_totvs::database(
     $character_set = $lb2_ora_totvs::params::character_set,
     $nationalcharacter_set = $lb2_ora_totvs::params::nationalcharacter_set,
     $download_dir = $lb2_ora_totvs::params::download_dir,
+    $data_file_destination = $lb2_ora_totvs::params::data_file_destination,
+    $recovery_area_destination = $lb2_ora_totvs::params::recovery_area_destination,
     ) inherits lb2_ora_totvs::params  {
     if File["${oracle_home}/bin/dbca"] {
         oradb::database{ $installation_title:
@@ -27,8 +29,8 @@ class lb2_ora_totvs::database(
             db_port                   => $listener_port,
             sys_password              => $sys_password,
             system_password           => $system_password,
-            data_file_destination     => "${oracle_base}/oradata",
-            recovery_area_destination => "${oracle_base}/flash_recovery_area",
+            data_file_destination     => $data_file_destination,
+            recovery_area_destination => $recovery_area_destination,
             character_set             => $character_set,
             nationalcharacter_set     => $nationalcharacter_set,
             sample_schema             => 'FALSE',

@@ -25,7 +25,8 @@
    <CustomScripts Execute="false"/>
    <InitParamAttributes>
       <InitParams>
-         <initParam name="db_create_file_dest" value="{ORACLE_BASE}/oradata"/>
+         <initParam name="db_recovery_file_dest" value="<%= @recovery_area_destination %>"/>
+            <initParam name="db_create_file_dest" value="<%= @data_file_destination %>"/>
          <initParam name="db_name" value="<%= @db_name %>"/>
          <initParam name="db_domain" value=""/>
          <initParam name="dispatchers" value="(PROTOCOL=TCP) (SERVICE={SID}XDB)"/>
@@ -35,7 +36,6 @@
          <initParam name="processes" value="300"/>
          <initParam name="undo_tablespace" value="UNDOTBS1"/>
          <initParam name="diagnostic_dest" value="{ORACLE_BASE}"/>
-         <initParam name="db_recovery_file_dest" value="{ORACLE_BASE}/fast_recovery_area"/>
          <initParam name="audit_trail" value="db"/>
          <initParam name="memory_target" value="<%= @memory_total %>" unit="MB"/>
          <initParam name="sessions" value="335"/>

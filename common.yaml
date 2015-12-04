@@ -15,6 +15,8 @@ lb2_ora_totvs::params::listener_port: '1521' #default value
 lb2_ora_totvs::params::installation_title: 'totvsDb_Create' #default value
 lb2_ora_totvs::params::datapump_directory: 'DATAPUMP' # default value
 lb2_ora_totvs::params::backup_dir: '/u01/app/oracle/backup' # default value
+lb2_ora_totvs::params::data_file_destination: '/u01/app/oracle/oradata' # default value
+lb2_ora_totvs::params::recovery_area_destination: '/u01/app/oracle/fast_recovery_area' # default value
 #Only use those params if ship_software = false
 # If ship_software = true the file name will be provided
 # automatically.
