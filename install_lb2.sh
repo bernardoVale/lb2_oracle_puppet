@@ -6,7 +6,7 @@ wget https://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
 rpm -ivh puppetlabs-release-el-6.noarch.rpm
 
 #Installing puppet
-yum install -y puppet-3.8.4-1.el6
+yum install -y puppet --nogpgcheck
 cd /etc/puppet/modules
 
 #Getting LB2 ORA TOTVS
